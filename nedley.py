@@ -7,7 +7,7 @@ import time
 from neopixel import *
 import netifaces as ni
 
-LED_COUNT      = 60      # Number of LED pixels.
+LED_COUNT      = 300      # Number of LED pixels.
 LED_PIN        = 18      # GPIO pin connected to the pixels (must support PWM!).
 LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA        = 5       # DMA channel to use for generating signal (try 5)
@@ -28,9 +28,11 @@ def set_led_data(path, tags, args, source):
         global last_update
 	
         last_update = time.clock()
-	
+	data = args
+        
         with lock:
-                led_data = args
+                to_index = min( len( data ), len( led_data ) )
+                led_data[:to_index] = data
 
 	
 def send_beacon():
@@ -72,8 +74,8 @@ if __name__ == '__main__':
 			strip.show()
 			frame_count+= 1
 	
-			if time.clock() - last_update > 1 and frame_count % 60 == 0:
-				send_beacon()
+			# if time.clock() - last_update > 1 and frame_count % 60 == 0:
+			# 	send_beacon()
 
 			time.sleep(1.0 / FRAME_RATE)
 			
